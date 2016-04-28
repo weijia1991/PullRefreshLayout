@@ -1,7 +1,7 @@
 # PullRefreshLayout
-PullRefreshLayout是一个为android组件提供下拉刷新和上拉加载功能的轻便的自定义控件 <br>
-![](https://github.com/weijia1991/PullRefreshLayout/blob/master/pullDown.gif) <br>
-![](https://github.com/weijia1991/PullRefreshLayout/blob/master/pullUp.gif) <br>
+PullRefreshLayout是一个为android组件提供下拉刷新和上拉加载功能的轻便的自定义控件 <br><br>
+![](https://github.com/weijia1991/PullRefreshLayout/blob/master/pullDown.gif) <br><br>
+![](https://github.com/weijia1991/PullRefreshLayout/blob/master/pullUp.gif) <br><br>
 # Usage
 1.xml layout: <br>
 `<com.wj.refresh.PullRefreshLayout` <br>
