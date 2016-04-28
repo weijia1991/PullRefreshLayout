@@ -14,5 +14,5 @@ PullRefreshLayout是一个为android组件提供下拉刷新和上拉加载功�
 `                // Pull on loading` <br>
 `            }` <br>
 `        });` <br>
-3.Refresh to complete:  <br><br>
+3.Refresh to complete:  <br>
 `mRefreshLayout.onRefreshComplete();`
