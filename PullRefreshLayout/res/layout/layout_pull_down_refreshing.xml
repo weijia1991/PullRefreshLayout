@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_pull_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/pull_refresh_arrow"
+                android:scaleType="center" />
+
+            <ProgressBar
+                android:id="@+id/pb_refreshing"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:indeterminateDrawable="@drawable/pull_down_refresh_loading"
+                android:indeterminateDuration="1500"
+                android:visibility="invisible"/>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_refresh_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/pull_down_refresh_label"
+            android:textColor="@color/pull_label_text_color"
+            android:textSize="14sp"/>
+    </LinearLayout>
+</LinearLayout>
