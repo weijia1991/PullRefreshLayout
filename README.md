@@ -5,8 +5,8 @@ PullRefreshLayout是一个为android组件提供下拉刷新和上拉加载功�
 `<com.wj.refresh.PullRefreshLayout` <br>
 `　　　　android:layout_width="match_parent"` <br>
 `　　　　android:layout_height="match_parent"` <br>
-`　　　　srl:refreshMode="both" >` <br>
-`　　　　<...ListView or GridView or ScrollView and more...>` <br>
+`　　　　srl:refreshMode="both" >` <br><br>
+`　　　　<...ListView or GridView or ScrollView and more...>` <br><br>
 `</com.wj.refresh.PullRefreshLayout>` <br><br>
 2.Set up refresh listener:　<br>
 `mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {` <br>
