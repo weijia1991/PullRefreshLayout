@@ -9,7 +9,6 @@ PullRefreshLayout是一个为android组件提供下拉刷新和上拉加载功�
             `public void onPullDownRefresh() {` <br><br>
                 `// The drop-down refresh` <br><br>
             `}` <br><br>
-
             `@Override` <br><br>
             `public void onPullUpRefresh() {` <br><br>
                 `// Pull on loading` <br><br>
