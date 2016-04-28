@@ -13,6 +13,6 @@ PullRefreshLayout是一个为android组件提供下拉刷新和上拉加载功�
 `            public void onPullUpRefresh() {` <br>
 `                // Pull on loading` <br>
 `            }` <br>
-`        });` <br>
-3.Refresh to complete:  <br><br>
+`        });` <br><br>
+3.Refresh to complete:  <br>
 `mRefreshLayout.onRefreshComplete();`
