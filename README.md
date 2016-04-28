@@ -5,14 +5,14 @@ PullRefreshLayout是一个为android组件提供下拉刷新和上拉加载功�
 
 2.Set up refresh listener:　<br>
 `mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {` <br>
-`        @Override` <br>
-`            public void onPullDownRefresh() {` <br>
-`                // The drop-down refresh` <br>
-`            }` <br>
-`            @Override` <br>
-`            public void onPullUpRefresh() {` <br>
-`                // Pull on loading` <br>
-`            }` <br>
-`        });` <br><br>
+`           @Override` <br>
+`           public void onPullDownRefresh() {` <br>
+`                 // The drop-down refresh` <br>
+`           }` <br>
+`           @Override` <br>
+`           public void onPullUpRefresh() {` <br>
+`                 // Pull on loading` <br>
+`           }` <br>
+`});` <br><br>
 3.Refresh to complete:  <br>
 `mRefreshLayout.onRefreshComplete();`
