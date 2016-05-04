@@ -5,7 +5,7 @@ PullRefreshLayout是一个为android组件提供下拉刷新和上拉加载功�
 # Usage
 gradle:<br><br>
 `dependencies {` <br>
-`　　　compile 'com.wj.refresh:PullRefreshLayout:1.0.0'` <br>
+`　　　compile 'com.wj.refresh:PullRefreshLayout:1.0.1'` <br>
 `}` <br><br>
 1.xml layout: <br>
 `<com.wj.refresh.PullRefreshLayout` <br>
