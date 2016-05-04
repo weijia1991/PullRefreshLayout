@@ -10,18 +10,14 @@
         android:layout_width="25dip"
         android:layout_height="25dip"
         android:indeterminateDrawable="@drawable/pull_up_loading"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
-        android:id="@+id/tv_loading_content"
+        android:id="@+id/tv_load_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dip"
-        android:paddingRight="10dip"
-        android:paddingTop="15dip"
-        android:paddingBottom="15dip"
-        android:text="@string/pull_up_loading_label"
+        android:padding="10dp"
+        android:text="@string/pull_up_load_label"
         android:textColor="@color/pull_label_text_color"
         android:textSize="14sp" />
-
 </LinearLayout>

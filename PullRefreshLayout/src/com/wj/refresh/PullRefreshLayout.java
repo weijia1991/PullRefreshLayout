@@ -32,11 +32,10 @@ public class PullRefreshLayout extends ViewGroup {
     private boolean mIsLoadingMore; // 是否正在加载
     private boolean mIsDispatchDown;
     private float mPullDownDistance; // 下拉距离
+    private float mPullUpDistance; // 上拉距离
 
     private boolean mIsHeaderCollapseAnimating;
     private boolean mIsFooterCollapseAnimating;
-    private boolean mIsFooterExpandAnimating;
-    private boolean mFlag;
 
     private int mMode;
     // 关闭下拉刷新和上拉加载更多
@@ -49,7 +48,8 @@ public class PullRefreshLayout extends ViewGroup {
     public static final int BOTH = 0x3;
 
     // 阻力因数,数值越小阻力越大,数值必须大于1
-    private final float FACTOR = 20;
+    private final float PULL_DOWN_FACTOR = 20;
+    private final float PULL_UP_FACTOR = 5;
 
     public PullRefreshLayout(Context context) {
         this(context, null);
@@ -143,14 +143,14 @@ public class PullRefreshLayout extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mIsHeaderCollapseAnimating || mIsFooterExpandAnimating || mIsFooterCollapseAnimating) {
+        if (mIsHeaderCollapseAnimating || mIsFooterCollapseAnimating) {
             return true;
         }
 
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_MOVE:
-                if (!mIsFooterCollapseAnimating && !mIsFooterExpandAnimating && !mIsHeaderCollapseAnimating) {
+                if (!mIsFooterCollapseAnimating && !mIsHeaderCollapseAnimating) {
                     scrollRefreshLayout(event);
                 }
                 mLastY = event.getY();
@@ -164,13 +164,18 @@ public class PullRefreshLayout extends ViewGroup {
                 } else if (refreshStatus == RefreshHeaderView.PullDownRefreshStatus.PULL_DOWN_REFRESH && getScrollY() < 0) {
                     collapseRefreshHeaderView(refreshStatus);
                 }
+
+                if (!mIsLoadingMore && getScrollY() > 0) {
+                    collapseLoadingFooterView();
+                }
+
                 mPullDownDistance = 0;
+                mPullUpDistance = 0;
 
                 if (mIsDispatchDown) {
                     mRefreshView.dispatchTouchEvent(event);
                     mIsDispatchDown = false;
                 }
-                mFlag = false;
                 break;
         }
         return true;
@@ -216,7 +221,7 @@ public class PullRefreshLayout extends ViewGroup {
 
                     if (mPullDownDistance > 0) {
                         // 阻尼
-                        float damping = (float) (mPullDownDistance / (Math.log(mPullDownDistance) / Math.log(FACTOR)));
+                        float damping = (float) (mPullDownDistance / (Math.log(mPullDownDistance) / Math.log(PULL_DOWN_FACTOR)));
                         damping = Math.max(0, damping);
                         scrollTo(0, (int) -damping);
 
@@ -231,11 +236,30 @@ public class PullRefreshLayout extends ViewGroup {
                         mPullDownDistance = 0;
                     }
                 }
-            } else if (dy > 0 && !canChildScrollDown() && getScrollY() == 0 && !mIsFooterCollapseAnimating) {
-                if (!mFlag && (mMode == PULL_FROM_END || mMode == BOTH) && !mIsFooterExpandAnimating) {
-                    mFlag = true;
+            } else if (dy > 0 && !canChildScrollDown() || getScrollY() > 0) {
+                if (mMode == PULL_FROM_END || mMode == BOTH) {
                     // 上拉加载
-                    expandLoadingFooterView();
+                    mPullUpDistance += dy;
+                    if (mPullUpDistance > 0) {
+                        // 阻尼
+                        float damping = (float) (mPullUpDistance / (Math.log(mPullUpDistance) / Math.log(PULL_UP_FACTOR)));
+                        damping = Math.max(0, damping);
+                        damping = Math.min(damping, mLoadingFooterView.getHeight());
+                        scrollTo(0, (int) damping);
+
+                        if (damping == mLoadingFooterView.getHeight()) {
+                            // 触发加载,将状态变为加载
+                            mLoadingFooterView.setLoadStatus(LoadingFooterView.PullUpLoadStatus.LOADING);
+                            mIsLoadingMore = true;
+
+                            if (mRefreshListener != null) {
+                                mRefreshListener.onPullUpRefresh();
+                            }
+                        }
+                    } else {
+                        scrollTo(0, 0);
+                        mPullUpDistance = 0;
+                    }
                 }
             } else {
                 if (!(!canChildScrollDown() && dy > 0)) {
@@ -323,6 +347,7 @@ public class PullRefreshLayout extends ViewGroup {
                 public void onAnimationEnd(Animator animation) {
                     mIsFooterCollapseAnimating = false;
                     mIsLoadingMore = false;
+                    mLoadingFooterView.setLoadStatus(LoadingFooterView.PullUpLoadStatus.PULL_UP_LOAD);
 
                     if (mRefreshView instanceof AbsListView) {
                         ((AbsListView) mRefreshView).smoothScrollBy(100, 200);
@@ -346,50 +371,8 @@ public class PullRefreshLayout extends ViewGroup {
             animator.start();
         } else {
             mIsLoadingMore = false;
+            mLoadingFooterView.setLoadStatus(LoadingFooterView.PullUpLoadStatus.PULL_UP_LOAD);
         }
-    }
-
-    /**
-     * 展开上拉加载view
-     */
-    private void expandLoadingFooterView() {
-        ValueAnimator animator = ValueAnimator.ofInt(0, mLoadingFooterView.getHeight());
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int value = (int) animation.getAnimatedValue();
-                scrollTo(0, value);
-            }
-        });
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                mIsFooterExpandAnimating = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mIsFooterExpandAnimating = false;
-                mIsLoadingMore = true;
-
-                if (mRefreshListener != null) {
-                    mRefreshListener.onPullUpRefresh();
-                }
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                mIsFooterExpandAnimating = false;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        animator.setDuration(200);
-        animator.setInterpolator(new AccelerateInterpolator(3));
-        animator.start();
     }
 
     /**
@@ -417,6 +400,7 @@ public class PullRefreshLayout extends ViewGroup {
                 View child = getChildAt(i);
                 if (!child.equals(mRefreshHeaderView) && !child.equals(mLoadingFooterView)) {
                     mRefreshView = child;
+                    mRefreshView.setOverScrollMode(View.OVER_SCROLL_NEVER);
                     break;
                 }
             }
@@ -546,6 +530,7 @@ public class PullRefreshLayout extends ViewGroup {
             collapseRefreshHeaderView(RefreshHeaderView.PullDownRefreshStatus.PULL_DOWN_REFRESH);
         }
         if (mIsLoadingMore && !mIsFooterCollapseAnimating) {
+            mPullUpDistance = 0;
             collapseLoadingFooterView();
         }
     }
