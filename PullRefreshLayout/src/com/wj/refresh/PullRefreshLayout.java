@@ -263,9 +263,7 @@ public class PullRefreshLayout extends ViewGroup {
                 }
             } else {
                 if (!(!canChildScrollDown() && dy > 0)) {
-                    if (Math.abs(dy) > 5) {
-                        dispatchTouchEventToRefreshView(event);
-                    }
+                    dispatchTouchEventToRefreshView(event);
                 }
             }
         }
